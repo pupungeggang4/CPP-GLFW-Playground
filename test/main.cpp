@@ -1,4 +1,5 @@
 #include <string>
+#include <locale>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -14,7 +15,7 @@
 GLFWwindow *window;
 int success; GLchar *infoLog;
 GLuint program, vShader, fShader, vao, bHUD, texture;
-GLint laPosition, laTexcoord;
+GLint laPosition, laTexcoord, luTextColor;
 std::vector<float> bHUDData = {
     0.5, -0.5, 1.0, 1.0, 0.5, 0.5, 1.0, 0.0, -0.5, -0.5, 0.0, 1.0,
     -0.5, -0.5, 0.0, 1.0, 0.5, 0.5, 1.0, 0.0, -0.5, 0.5, 0.0, 0.0
@@ -47,8 +48,12 @@ int main(int argc, char *argv[]) {
 
         glBindVertexArray(vao);
         glBindTexture(GL_TEXTURE_2D, texture);
-        FT_Load_Char(font, '1', FT_LOAD_RENDER);
+        unsigned short c = L'펑';
+        FT_Load_Char(font, c, FT_LOAD_RENDER);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, font->glyph->bitmap.width, font->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, font->glyph->bitmap.buffer);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageptr);
+
+        glUniform3f(luTextColor, 0.0, 1.0, 1.0);
         glBindBuffer(GL_ARRAY_BUFFER, bHUD);
         glVertexAttribPointer(laPosition, 2, GL_FLOAT, false, sizeof(float) * 4, (void*)(0));
         glVertexAttribPointer(laTexcoord, 2, GL_FLOAT, false, sizeof(float) * 4, (void*)(sizeof(float) * 2));
@@ -120,6 +125,7 @@ void initGL() {
 
     laPosition = glGetAttribLocation(program, "a_position");
     laTexcoord = glGetAttribLocation(program, "a_texcoord");
+    luTextColor = glGetUniformLocation(program, "u_textcolor");
 
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &bHUD);
