@@ -13,8 +13,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <AL/al.h>
-#include <AL/alc.h>
+#include <SFML/Audio.hpp>
 
 GLFWwindow *window;
 int success; GLchar *infoLog;
@@ -39,6 +38,10 @@ int main(int argc, char *argv[]) {
     void *imageptr = (void*)FreeImage_GetBits(pimage);
     int width = FreeImage_GetWidth(pimage);
     int height = FreeImage_GetHeight(pimage);
+
+    sf::Music music("audio/test.wav");
+    music.play();
+
     initGlfw();
     initGL();
     initFont();
