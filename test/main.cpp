@@ -27,14 +27,7 @@ std::vector<float> bHUDData = {
 FT_Library ft;
 FT_Face font;
 FIBITMAP *bitmap, *pimage;
-ALCdevice *device;
-ALCcontext *context;
-ALuint bAudio, audioSource;
-std::uint8_t channel, bps;
-std::int32_t sampleRate;
-ALsizei aSize;
 
-void initAudio();
 void initGlfw();
 void initGL();
 void initFont();
@@ -49,7 +42,6 @@ int main(int argc, char *argv[]) {
     initGlfw();
     initGL();
     initFont();
-    initAudio();
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -72,8 +64,7 @@ int main(int argc, char *argv[]) {
         glEnableVertexAttribArray(laPosition);
         glEnableVertexAttribArray(laTexcoord);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        ALint state;
-        alGetSourcei(audioSource, AL_SOURCE_STATE, &state);
+
         //std::cout << state << std::endl;
 
         glfwSwapBuffers(window);
@@ -81,28 +72,6 @@ int main(int argc, char *argv[]) {
     }
 
     return 0;
-}
-
-void initAudio() {
-    device = alcOpenDevice(NULL);
-    context = alcCreateContext(device, NULL);
-    alcMakeContextCurrent(context);
-    
-    std::ifstream wavFile("audio/test.wav", std::ios::binary);
-    wavFile.seekg(44);
-    aSize = (ALsizei)((int)wavFile.seekg(0, std::ios::end).tellg() - 44);
-    std::vector<char> data(aSize);
-    wavFile.read(data.data(), aSize);
-    std::cout << aSize << std::endl;
-
-    alGenBuffers(1, &bAudio);
-    alBufferData(bAudio, AL_FORMAT_STEREO16, data.data(), aSize, 44100);
-    alGenSources(1, &audioSource);
-    alSourcei(audioSource, AL_LOOPING, 1);
-    alSourcei(audioSource, AL_BUFFER, bAudio);
-
-    alSourcePlay(audioSource);
-    std::cout << alGetError() << std::endl;
 }
 
 void initGlfw() {
