@@ -19,10 +19,13 @@ std::vector<float> bHUDData = {
     0.5, -0.5, 1.0, 1.0, 0.5, 0.5, 1.0, 0.0, -0.5, -0.5, 0.0, 1.0,
     -0.5, -0.5, 0.0, 1.0, 0.5, 0.5, 1.0, 0.0, -0.5, 0.5, 0.0, 0.0
 };
+FT_Library ft;
+FT_Face font;
 FIBITMAP *bitmap, *pimage;
 
 void initGlfw();
 void initGL();
+void initFont();
 
 int main(int argc, char *argv[]) {
     bitmap = FreeImage_Load(FIF_PNG, "image/a.png", PNG_DEFAULT);
@@ -33,6 +36,7 @@ int main(int argc, char *argv[]) {
     int height = FreeImage_GetHeight(pimage);
     initGlfw();
     initGL();
+    initFont();
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -43,7 +47,8 @@ int main(int argc, char *argv[]) {
 
         glBindVertexArray(vao);
         glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageptr);
+        FT_Load_Char(font, '1', FT_LOAD_RENDER);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, font->glyph->bitmap.width, font->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, font->glyph->bitmap.buffer);
         glBindBuffer(GL_ARRAY_BUFFER, bHUD);
         glVertexAttribPointer(laPosition, 2, GL_FLOAT, false, sizeof(float) * 4, (void*)(0));
         glVertexAttribPointer(laTexcoord, 2, GL_FLOAT, false, sizeof(float) * 4, (void*)(sizeof(float) * 2));
@@ -73,6 +78,7 @@ void initGlfw() {
 
 void initGL() {
     gladLoadGL();
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     std::ifstream f;
     f.open("shader/vertex.vert");
     std::stringstream vSourceSS;
@@ -127,4 +133,10 @@ void initGL() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
+
+void initFont() {
+    FT_Init_FreeType(&ft);
+    FT_New_Face(ft, "font/neodgm.ttf", 0, &font);
+    FT_Set_Pixel_Sizes(font, 0, 48);
 }
