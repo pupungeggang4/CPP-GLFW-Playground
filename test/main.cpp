@@ -39,7 +39,8 @@ int main(int argc, char *argv[]) {
     int width = FreeImage_GetWidth(pimage);
     int height = FreeImage_GetHeight(pimage);
 
-    sf::Music music("audio/test.wav");
+    sf::Music music;
+    music.openFromFile("audio/test.wav");
     music.play();
 
     initGlfw();
