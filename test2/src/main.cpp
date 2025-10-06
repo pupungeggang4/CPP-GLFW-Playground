@@ -9,8 +9,7 @@
 int main(int argc, char *argv[]) {
     glfwInit();
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GL_TRUE);
-    GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "Test", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Test", NULL, NULL);
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
@@ -18,8 +17,10 @@ int main(int argc, char *argv[]) {
     TTF_Init();
     TTF_Font* font = TTF_OpenFont("font/neodgm.ttf", 32);
     SDL_Color color = {255, 255, 255, 255};
-    SDL_Surface* surfaceText = TTF_RenderText_Blended(font, "Hello GLFW Mesh and SDL Text", color);
-    //SDL_Surface* surfaceText = SDL_ConvertSurface(TTF_RenderText_Blended(font, "Hello GLFW Mesh and SDL Text", 0, color), SDL_PIXELFORMAT_ARGB8888);
+    SDL_Surface* surfaceUI = SDL_CreateRGBSurface(0, 800, 600, 32, 0, 0, 0, 0);
+    SDL_Surface* surfaceText = TTF_RenderText_Blended(font, "Hello GLFW Mesh and SDL Text!", color);
+    SDL_Rect rect = {10, 10, surfaceText->w, surfaceText->h};
+    SDL_BlitSurface(surfaceText, NULL, surfaceUI, &rect);
     
     glEnable(GL_TEXTURE_2D);
     GLuint id;
@@ -29,8 +30,6 @@ int main(int argc, char *argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    std::cout << std::hex << surfaceText->format << std::endl;
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -51,17 +50,17 @@ int main(int argc, char *argv[]) {
 
         glDisable(GL_COLOR);
         glEnable(GL_TEXTURE_2D);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surfaceText->w, surfaceText->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surfaceText->pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surfaceUI->w, surfaceUI->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surfaceUI->pixels);
         glColor4f(1.0, 1.0, 1.0, 1.0);
         glBegin(GL_QUADS);
         glTexCoord2f(0.0, 1.0);
-        glVertex2f(-0.9, 0.8);
+        glVertex2f(-1.0, -1.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex2f(-0.2, 0.8);
+        glVertex2f(1.0, -1.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex2f(-0.2, 0.9);
+        glVertex2f(1.0, 1.0);
         glTexCoord2f(0.0, 0.0);
-        glVertex2f(-0.9, 0.9);
+        glVertex2f(-1.0, 1.0);
         glEnd();
 
         glfwSwapBuffers(window);
