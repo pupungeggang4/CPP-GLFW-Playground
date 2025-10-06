@@ -92,7 +92,7 @@ void initGlfw() {
 }
 
 void initGL() {
-    gladLoadGL();
+    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     std::ifstream f;
     f.open("shader/vertex.vert");
