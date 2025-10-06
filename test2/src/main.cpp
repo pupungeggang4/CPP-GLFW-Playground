@@ -1,7 +1,7 @@
 #include <iostream>
-#include <SDL3/SDL.h>
-#include <SDL3_image/SDL_image.h>
-#include <SDL3_ttf/SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GLFW/glfw3.h>
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     TTF_Init();
     TTF_Font* font = TTF_OpenFont("font/neodgm.ttf", 32);
     SDL_Color color = {255, 255, 255, 255};
-    SDL_Surface* surfaceText = TTF_RenderText_Blended(font, "Hello GLFW Mesh and SDL Text", 0, color);
+    SDL_Surface* surfaceText = TTF_RenderText_Blended(font, "Hello GLFW Mesh and SDL Text", color);
     //SDL_Surface* surfaceText = SDL_ConvertSurface(TTF_RenderText_Blended(font, "Hello GLFW Mesh and SDL Text", 0, color), SDL_PIXELFORMAT_ARGB8888);
     
     glEnable(GL_TEXTURE_2D);
@@ -31,9 +31,6 @@ int main(int argc, char *argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     std::cout << std::hex << surfaceText->format << std::endl;
-    Uint8 r, g, b, a;
-    SDL_ReadSurfacePixel(surfaceText, 100, 10, &r, &g, &b, &a);
-    std::cout << std::dec << int(r) << int(g) << int(b) << int(a) << std::endl;
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0, 0.0, 0.0, 1.0);
